@@ -11,7 +11,7 @@
 @implementation UserInfo
 
 - (void) printData{
-    NSLog(@"Username: %@\nPassword: %@", self.username, self.password);
+    NSLog(@"Username: %@\nPassword: %@\n", self.username, self.password);
 }
 
 + (void) writeData{
@@ -39,7 +39,7 @@
     NSLog(@"Data written successfully");
 }
 
-+ (id) readData{
++ (UserInfo*) readData{//returns (Userinfo*)
     NSArray *urls = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
     NSURL *fileURL = [[urls lastObject] URLByAppendingPathComponent:@"info.data"];
     NSLog(@"%@", fileURL.path);
@@ -47,7 +47,26 @@
     NSLog(@"Reading data from file");
     NSData *fileData = [NSData dataWithContentsOfFile:fileURL.path];
     NSMutableArray *items = [NSKeyedUnarchiver unarchiveObjectWithData:fileData];
-    return items;
+    return [items firstObject];
+}
++ (void) writeUsername:(NSString*) username andPassword: (NSString*) password {
+    NSArray *urls = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    NSURL *fileURL = [[urls lastObject] URLByAppendingPathComponent:@"info.data"];
+    NSLog(@"%@", fileURL.path);
+    
+    NSLog(@"Writing object to file...");
+    NSMutableArray *items = [[NSMutableArray alloc] init];
+    
+    //custom class
+    UserInfo *info = [[UserInfo alloc]init];
+    info.username = username;
+    info.password = password;
+    [items addObject:info];
+    
+    //write to file
+    NSData *fileData = [NSKeyedArchiver archivedDataWithRootObject:items];
+    [fileData writeToURL:fileURL atomically:YES];
+    NSLog(@"Data written successfully.");
 }
 
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {

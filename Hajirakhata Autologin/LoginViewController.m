@@ -7,7 +7,7 @@
 //
 
 #import "LoginViewController.h"
-
+#import "UserInfo.h"
 
 @interface LoginViewController ()
 
@@ -18,9 +18,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+//    [self.button setTitle:@"Log in" forState:UIControlStateNormal];
+//    [self.button setTitle:@"Logging in..." forState:UIControlStateDisabled];
+    
+    UserInfo * info = [UserInfo readData];
+    if (info) {
+        self.username.text = info.username;
+        self.password.text = info.password;
+    }
+    [self fixTextField];
+    
+
     self.keyboardAnimator = [[KeyboardAnimator alloc]initKeyboardAnimatorWithTextField:@[self.username,self.password] withTargetTextField:@[self.password,self.password] AndWhichViewWillAnimated:self.view bottomConstraints:nil nonBottomConstraints:nil];
     [self.keyboardAnimator registerKeyboardEventListener];
     
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
+    [self.view addGestureRecognizer:tap];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -39,13 +52,18 @@
 */
 
 - (IBAction)loginButton:(id)sender {
-    [self prepareURL];
+    [self dismissKeyboard];
+    [self.button setTitle:@"Logging in..." forState:UIControlStateNormal];
+    [self sendData];
     NSLog(@"Pressed login Button\nUsername: %@\nPassword: %@", self.username.text, self.password.text);
+    //[self.button setTitle:@"Log in" forState:UIControlStateNormal];
 }
 
-- (void) prepareURL{
+- (void) sendData{
     // Create the URLSession on the default configuration
     NSURLSessionConfiguration *defaultSessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    defaultSessionConfiguration.timeoutIntervalForRequest = 60;//in seconds; default = 60s
+//    defaultSessionConfiguration.timeoutIntervalForResource = //in seconds; default value = 7days;
     NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:defaultSessionConfiguration];
     
     // Setup the request with URL
@@ -62,7 +80,14 @@
     
     // Create dataTask
     NSURLSessionDataTask *dataTask = [defaultSession dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-//         Handle your response here
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+//            NSLog(@"Change button title to login again");
+            [self.button setTitle:@"Log in" forState:UIControlStateNormal];
+        });
+        
+        NSLog(@"response: %@\nerr: %@\n", response, error);
+        
         if (error) {
             NSLog(@"Error Occured!\n%ld\n%@\n",(long)error.code, error.userInfo[@"NSLocalizedDescription"]);
             
@@ -76,23 +101,40 @@
             if((long)[httpResponse statusCode] == 200 ){
                 if ([responseURL localizedCaseInsensitiveContainsString:@"Login.do"]) {
                     //wrong username & password!
-                    NSLog(@"Bad Response from server\n%ld" , (long)[httpResponse statusCode]);
+                    NSLog(@"Wrong username or password\n%ld" , (long)[httpResponse statusCode]);
                     [self showAlertWithTitle:@"Failed"
-                                  andMessage: @"Bad response from server"];
+                                  andMessage: @"Wrong username or password!"];
                 }else{
-                    [self showAlertWithTitle:@"Success" andMessage: [NSString stringWithFormat:@"Login time: %@", @"demo time"]];
-                    // TO DO Show success screen!
+                    
+                    NSString *dateString = httpResponse.allHeaderFields[@"Date"];
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    
+                    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+                    dateFormatter.dateFormat =  @"EEE, dd MMM yyyy HH:mm:ss ZZZZ";
+                    NSDate *loginDate = [dateFormatter dateFromString:dateString];
+                    
+                    dateFormatter.timeZone = [NSTimeZone systemTimeZone]; //GMT +6
+                    dateFormatter.dateFormat = @"hh:mm:ss a'\n'EEEE dd MMM, yyyy";
+                    dateString = [dateFormatter stringFromDate:loginDate];
+                    NSLog(@"Success! Login time: %@", dateString);
+                    
+                    //runs in main thread
+                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        NSLog(@"data & button fix");
+                        [UserInfo writeUsername:self.username.text andPassword:self.password.text]; //store username & password;
+                        [self fixTextField];
+                    });
+                    
+                    [self showAlertWithTitle:@"Success"
+                                  andMessage: [NSString stringWithFormat:@"Login time: %@", dateString ]];// success alert
                 }
             }
             else{
                 NSLog(@"Failed! Awkward response from server :(\nstatus code: %ld" , (long)[httpResponse statusCode]);
                 [self showAlertWithTitle:@"Failed!" andMessage: [NSString stringWithFormat:@"Awkward response from server :("]];
-                // TO DO check connection
-                //if first time failed, load log in screen again , else provide try again button
             }
             
         }
-//        NSLog(@"resp: %@, err: %@", response, error);
     }];
     
     // Fire the request
@@ -114,5 +156,36 @@
     for (NSHTTPCookie *each in cookieStorage.cookies) {
         [cookieStorage deleteCookie:each];
     }
+}
+- (IBAction)unlockFields:(id)sender {
+//    NSLog(@"%d", self.modifySwitch.on);
+    [self fixTextField];
+}
+
+-(void) fixTextField{
+    UserInfo * info = [UserInfo readData];
+    if(!self.modifySwitch.on){//modify switch off
+        if(info!=nil) {//Userinfo saved in database
+            [self.button setTitle:@"Log in" forState:UIControlStateNormal];
+//            self.username.userInteractionEnabled = NO;
+//            self.password.userInteractionEnabled = NO;
+            self.username.enabled = NO;
+            self.password.enabled = NO;
+        }
+    }
+    else{//modify switch on
+        [self.button setTitle:@"Modify" forState:UIControlStateNormal];
+        [self.username becomeFirstResponder];
+//        self.username.userInteractionEnabled = YES;
+//        self.password.userInteractionEnabled = YES;
+        self.username.enabled = YES;
+        self.password.enabled = YES;
+    }
+}
+
+-(void)dismissKeyboard{
+//    [aTextField resignFirstResponder];
+    [self.username resignFirstResponder];
+    [self.password resignFirstResponder];
 }
 @end

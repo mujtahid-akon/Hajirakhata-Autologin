@@ -10,8 +10,11 @@
 #import "KeyboardAnimator.h"
 
 @interface LoginViewController : UIViewController
+@property (weak, nonatomic) IBOutlet UISwitch *modifySwitch;
+- (IBAction)unlockFields:(id)sender;
 @property (nonatomic, strong) KeyboardAnimator *keyboardAnimator;
 @property (weak, nonatomic) IBOutlet UITextField *username;
 @property (weak, nonatomic) IBOutlet UITextField *password;
+@property (weak, nonatomic) IBOutlet UIButton *button;
 - (IBAction)loginButton:(id)sender;
 @end

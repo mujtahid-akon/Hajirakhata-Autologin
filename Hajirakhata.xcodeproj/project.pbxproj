@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		370E7B7A1FD7A32300A6C69E /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E7B791FD7A32300A6C69E /* LoginViewController.m */; };
 		370E7B7D1FD7B32C00A6C69E /* KeyboardAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E7B7B1FD7B32C00A6C69E /* KeyboardAnimator.m */; };
-		370E7B801FD7DB5100A6C69E /* ResponseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E7B7F1FD7DB5100A6C69E /* ResponseViewController.m */; };
 		375557851FD8F1F500986F02 /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 375557831FD8F1F500986F02 /* UserInfo.m */; };
 		D737C4881FC6CF17000F723F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D737C4871FC6CF17000F723F /* AppDelegate.m */; };
 		D737C48E1FC6CF17000F723F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D737C48C1FC6CF17000F723F /* Main.storyboard */; };
@@ -23,11 +22,9 @@
 		370E7B791FD7A32300A6C69E /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		370E7B7B1FD7B32C00A6C69E /* KeyboardAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardAnimator.m; sourceTree = "<group>"; };
 		370E7B7C1FD7B32C00A6C69E /* KeyboardAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardAnimator.h; sourceTree = "<group>"; };
-		370E7B7E1FD7DB5100A6C69E /* ResponseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResponseViewController.h; sourceTree = "<group>"; };
-		370E7B7F1FD7DB5100A6C69E /* ResponseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResponseViewController.m; sourceTree = "<group>"; };
 		375557831FD8F1F500986F02 /* UserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfo.m; sourceTree = "<group>"; };
 		375557841FD8F1F500986F02 /* UserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfo.h; sourceTree = "<group>"; };
-		D737C4831FC6CF17000F723F /* Hajirakhata Autologin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hajirakhata Autologin.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D737C4831FC6CF17000F723F /* Hajirakhata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hajirakhata.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D737C4861FC6CF17000F723F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D737C4871FC6CF17000F723F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		D737C48D1FC6CF17000F723F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -59,7 +56,7 @@
 		D737C4841FC6CF17000F723F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D737C4831FC6CF17000F723F /* Hajirakhata Autologin.app */,
+				D737C4831FC6CF17000F723F /* Hajirakhata.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,8 +69,6 @@
 				D737C4861FC6CF17000F723F /* AppDelegate.h */,
 				D737C4871FC6CF17000F723F /* AppDelegate.m */,
 				D737C48C1FC6CF17000F723F /* Main.storyboard */,
-				370E7B7E1FD7DB5100A6C69E /* ResponseViewController.h */,
-				370E7B7F1FD7DB5100A6C69E /* ResponseViewController.m */,
 				370E7B781FD7A32300A6C69E /* LoginViewController.h */,
 				370E7B791FD7A32300A6C69E /* LoginViewController.m */,
 				375557841FD8F1F500986F02 /* UserInfo.h */,
@@ -89,9 +84,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D737C4821FC6CF16000F723F /* Hajirakhata Autologin */ = {
+		D737C4821FC6CF16000F723F /* Hajirakhata */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D737C4991FC6CF18000F723F /* Build configuration list for PBXNativeTarget "Hajirakhata Autologin" */;
+			buildConfigurationList = D737C4991FC6CF18000F723F /* Build configuration list for PBXNativeTarget "Hajirakhata" */;
 			buildPhases = (
 				D737C47F1FC6CF16000F723F /* Sources */,
 				D737C4801FC6CF16000F723F /* Frameworks */,
@@ -101,9 +96,9 @@
 			);
 			dependencies = (
 			);
-			name = "Hajirakhata Autologin";
+			name = Hajirakhata;
 			productName = "Hajirakhata Autologin";
-			productReference = D737C4831FC6CF17000F723F /* Hajirakhata Autologin.app */;
+			productReference = D737C4831FC6CF17000F723F /* Hajirakhata.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -121,7 +116,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D737C47E1FC6CF16000F723F /* Build configuration list for PBXProject "Hajirakhata Autologin" */;
+			buildConfigurationList = D737C47E1FC6CF16000F723F /* Build configuration list for PBXProject "Hajirakhata" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -134,7 +129,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D737C4821FC6CF16000F723F /* Hajirakhata Autologin */,
+				D737C4821FC6CF16000F723F /* Hajirakhata */,
 			);
 		};
 /* End PBXProject section */
@@ -160,7 +155,6 @@
 				D737C4961FC6CF18000F723F /* main.m in Sources */,
 				370E7B7D1FD7B32C00A6C69E /* KeyboardAnimator.m in Sources */,
 				D737C4881FC6CF17000F723F /* AppDelegate.m in Sources */,
-				370E7B801FD7DB5100A6C69E /* ResponseViewController.m in Sources */,
 				375557851FD8F1F500986F02 /* UserInfo.m in Sources */,
 				370E7B7A1FD7A32300A6C69E /* LoginViewController.m in Sources */,
 			);
@@ -301,7 +295,7 @@
 				INFOPLIST_FILE = "Hajirakhata Autologin/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.revesoft.akon.hajirakhata-autologin";
+				PRODUCT_BUNDLE_IDENTIFIER = com.revesoft.akon.hajirakhata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -316,7 +310,7 @@
 				INFOPLIST_FILE = "Hajirakhata Autologin/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.revesoft.akon.hajirakhata-autologin";
+				PRODUCT_BUNDLE_IDENTIFIER = com.revesoft.akon.hajirakhata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -325,7 +319,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D737C47E1FC6CF16000F723F /* Build configuration list for PBXProject "Hajirakhata Autologin" */ = {
+		D737C47E1FC6CF16000F723F /* Build configuration list for PBXProject "Hajirakhata" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D737C4971FC6CF18000F723F /* Debug */,
@@ -334,7 +328,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D737C4991FC6CF18000F723F /* Build configuration list for PBXNativeTarget "Hajirakhata Autologin" */ = {
+		D737C4991FC6CF18000F723F /* Build configuration list for PBXNativeTarget "Hajirakhata" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D737C49A1FC6CF18000F723F /* Debug */,

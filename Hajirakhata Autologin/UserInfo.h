@@ -9,10 +9,13 @@
 #import <Foundation/Foundation.h>
 
 @interface UserInfo : NSObject<NSCoding>
+//@property (nonatomic) BOOL isStored;
 @property (nonatomic, copy) NSString *username;
 @property (nonatomic, copy) NSString *password;
 
 - (void)printData;
 + (void) writeData;
-+ (id) readData;
++ (void) writeUsername:(NSString*) username andPassword: (NSString*) password;
++ (UserInfo*) readData;
+
 @end
