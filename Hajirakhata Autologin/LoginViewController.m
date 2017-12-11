@@ -167,8 +167,6 @@
     if(!self.modifySwitch.on){//modify switch off
         if(info!=nil) {//Userinfo saved in database
             [self.button setTitle:@"Log in" forState:UIControlStateNormal];
-//            self.username.userInteractionEnabled = NO;
-//            self.password.userInteractionEnabled = NO;
             self.username.enabled = NO;
             self.password.enabled = NO;
         }
@@ -176,16 +174,17 @@
     else{//modify switch on
         [self.button setTitle:@"Modify" forState:UIControlStateNormal];
         [self.username becomeFirstResponder];
-//        self.username.userInteractionEnabled = YES;
-//        self.password.userInteractionEnabled = YES;
         self.username.enabled = YES;
         self.password.enabled = YES;
     }
 }
 
 -(void)dismissKeyboard{
-//    [aTextField resignFirstResponder];
     [self.username resignFirstResponder];
     [self.password resignFirstResponder];
+}
+
+- (IBAction)unwindToLogin:(UIStoryboardSegue*) segue{
+    
 }
 @end
