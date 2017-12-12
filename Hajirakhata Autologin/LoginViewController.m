@@ -18,13 +18,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSLog(@"---------log in page did load-----------");
+    self.button.layer.cornerRadius = 5.0;
     UserInfo * info = [UserInfo readData];
     if (info) {
         self.username.text = info.username;
         self.password.text = info.password;
     }
     [self fixTextField];
+//    [self.username becomeFirstResponder];
     
     //make textfields visible above the keyboard
     self.keyboardAnimator = [[KeyboardAnimator alloc]initKeyboardAnimatorWithTextField:@[self.username,self.password] withTargetTextField:@[self.password,self.password] AndWhichViewWillAnimated:self.view bottomConstraints:nil nonBottomConstraints:nil];
@@ -105,10 +106,6 @@
     // Create dataTask
     NSURLSessionDataTask *dataTask = [defaultSession dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self fixTextField];
-        });
-        
 //        NSLog(@"response: %@\nerr: %@\n", response, error);
         
         if (error) {
@@ -165,6 +162,9 @@
             }
             
         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self fixTextField];
+        });
     }];
     // Fire the request
     [dataTask resume];
@@ -189,6 +189,12 @@
 }
 - (IBAction)unlockFields:(id)sender {
     [self fixTextField];
+    if (self.modifySwitch.on) {
+        [self.username becomeFirstResponder];
+    }
+    else{
+        [self.username resignFirstResponder];
+    }
 }
 
 -(void) fixTextField{
@@ -200,17 +206,15 @@
             self.username.enabled = NO;
             self.password.enabled = NO;
         }
-        else {
-            [self.button setTitle:@"Edit" forState:UIControlStateNormal];
-//            [self.username becomeFirstResponder];
+        else { //
+            [self.button setTitle:@"Log in" forState:UIControlStateNormal];
             self.username.enabled = YES;
             self.password.enabled = YES;
         }
         
     }
     else{//modify switch on
-        [self.button setTitle:@"Edit Fields" forState:UIControlStateNormal];
-        [self.username becomeFirstResponder];
+        [self.button setTitle:@"Update" forState:UIControlStateNormal];
         self.username.enabled = YES;
         self.password.enabled = YES;
     }
