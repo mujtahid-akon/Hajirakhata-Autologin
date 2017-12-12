@@ -18,23 +18,23 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-//    [self.button setTitle:@"Log in" forState:UIControlStateNormal];
-//    [self.button setTitle:@"Logging in..." forState:UIControlStateDisabled];
-    
+    NSLog(@"---------log in page did load-----------");
     UserInfo * info = [UserInfo readData];
     if (info) {
         self.username.text = info.username;
         self.password.text = info.password;
     }
     [self fixTextField];
-
+    
+    //make textfields visible above the keyboard
     self.keyboardAnimator = [[KeyboardAnimator alloc]initKeyboardAnimatorWithTextField:@[self.username,self.password] withTargetTextField:@[self.password,self.password] AndWhichViewWillAnimated:self.view bottomConstraints:nil nonBottomConstraints:nil];
     [self.keyboardAnimator registerKeyboardEventListener];
     
+    //tapping outside will dismiss keyboard
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
     [self.view addGestureRecognizer:tap];
     
+    //website view controller
     self.webNavController = (UINavigationController*) [self.storyboard instantiateViewControllerWithIdentifier:@"WebNavigationControllerID"];
 }
 
@@ -56,6 +56,12 @@
 - (IBAction)loginButton:(id)sender {
     [self dismissKeyboard];
     
+    if (self.username.text.length<=0 || self.password.text.length<=0) {
+        [self showAlertWithTitle:@"Error!"
+                         message: @"Username or password field is empty" andAction:nil];
+        return;
+    }
+    
     //Check Network
     CFArrayRef myArray = CNCopySupportedInterfaces();
     CFDictionaryRef myDict = CNCopyCurrentNetworkInfo(CFArrayGetValueAtIndex(myArray, 0));
@@ -74,14 +80,6 @@
     [self.button setTitle:@"Logging in..." forState:UIControlStateNormal];
     [self sendData];
     NSLog(@"Pressed login Button\nUsername: %@\nPassword: %@", self.username.text, self.password.text);
-    NSLog(@"login button thread: %@", [NSThread currentThread]);
-    //[self.button setTitle:@"Log in" forState:UIControlStateNormal];
-
-//    NSString * storyboardName = @"Main";
-//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
-//    UIViewController * self.WebContentViewController = [storyboard instantiateViewControllerWithIdentifier:@""];
-////    self.webContentViewController = [[WebContentViewController alloc]init];
-//    [self presentViewController:vc animated:YES completion:nil];
     
 }
 
@@ -108,8 +106,7 @@
     NSURLSessionDataTask *dataTask = [defaultSession dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
-//            NSLog(@"Change button title to login again");
-            [self.button setTitle:@"Log in" forState:UIControlStateNormal];
+            [self fixTextField];
         });
         
 //        NSLog(@"response: %@\nerr: %@\n", response, error);
@@ -127,8 +124,8 @@
                 if ([responseURL localizedCaseInsensitiveContainsString:@"Login.do"]) {
                     //wrong username & password!
                     NSLog(@"Wrong username or password\n%ld" , (long)[httpResponse statusCode]);
-                    [self showAlertWithTitle:@"Failed"
-                                  message: @"Wrong username or password!" andAction:nil];
+                    [self showAlertWithTitle:@"Failed!"
+                                  message: @"Wrong username or password" andAction:nil];
                 }else{
                     
                     NSString *dateString = httpResponse.allHeaderFields[@"Date"];
@@ -145,22 +142,21 @@
                     
                     //runs in main thread
                     dispatch_async(dispatch_get_main_queue(), ^{
-//                        NSLog(@"data & button fix");
                         [UserInfo writeUsername:self.username.text andPassword:self.password.text]; //store username & password;
-                        [self fixTextField];
+                        //[self fixTextField];
                     });
-                    NSLog(@"success thread: %@", [NSThread currentThread]);
-                    
                     UIAlertAction *successAction = [UIAlertAction actionWithTitle:@"OK"
                                                                             style:UIAlertActionStyleDefault
                                                                           handler:^(UIAlertAction * action) {
-                                                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                                              [self.keyboardAnimator unregisterKeyboardEventListener];
+                                                                              dispatch_async(dispatch_get_main_queue(), ^{ //load website in main thread
+                                                                                  
                                                                                   [self presentViewController:self.webNavController animated:YES completion:nil];
                                                                               });
                                                                           }];
-                    
-                    [self showAlertWithTitle:@"Success"
-                                  message: [NSString stringWithFormat:@"Login time: %@", dateString ] andAction:successAction];// success alert
+                    [self showAlertWithTitle:@"Success!"
+                                  message: [NSString stringWithFormat:@"Login time: %@", dateString ]
+                                   andAction:successAction];// success alert
                 }
             }
             else{
@@ -170,7 +166,6 @@
             
         }
     }];
-    
     // Fire the request
     [dataTask resume];
 }
@@ -193,18 +188,25 @@
     }
 }
 - (IBAction)unlockFields:(id)sender {
-//    NSLog(@"%d", self.modifySwitch.on);
     [self fixTextField];
 }
 
 -(void) fixTextField{
-    UserInfo * info = [UserInfo readData];
+    
     if(!self.modifySwitch.on){//modify switch off
-        if(info!=nil) {//Userinfo saved in database
+        UserInfo * info = [UserInfo readData];
+        if(info!= nil && [info.username isEqualToString: self.username.text] && [info.password isEqualToString: self.password.text]) {//Userinfo saved in database
             [self.button setTitle:@"Log in" forState:UIControlStateNormal];
             self.username.enabled = NO;
             self.password.enabled = NO;
         }
+        else {
+            [self.button setTitle:@"Modify" forState:UIControlStateNormal];
+//            [self.username becomeFirstResponder];
+            self.username.enabled = YES;
+            self.password.enabled = YES;
+        }
+        
     }
     else{//modify switch on
         [self.button setTitle:@"Modify" forState:UIControlStateNormal];
@@ -220,6 +222,6 @@
 }
 
 - (IBAction)unwindToLogin:(UIStoryboardSegue*) segue{
-    
+    [self viewDidLoad];
 }
 @end
