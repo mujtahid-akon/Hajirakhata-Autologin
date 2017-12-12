@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3704C0361FDD3D1C00DE8832 /* WebContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3704C0351FDD3D1C00DE8832 /* WebContentViewController.m */; };
 		370E7B7A1FD7A32300A6C69E /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E7B791FD7A32300A6C69E /* LoginViewController.m */; };
 		370E7B7D1FD7B32C00A6C69E /* KeyboardAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E7B7B1FD7B32C00A6C69E /* KeyboardAnimator.m */; };
 		375557851FD8F1F500986F02 /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 375557831FD8F1F500986F02 /* UserInfo.m */; };
@@ -18,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3704C0341FDD3D1C00DE8832 /* WebContentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebContentViewController.h; sourceTree = "<group>"; };
+		3704C0351FDD3D1C00DE8832 /* WebContentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebContentViewController.m; sourceTree = "<group>"; };
 		370E7B781FD7A32300A6C69E /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		370E7B791FD7A32300A6C69E /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		370E7B7B1FD7B32C00A6C69E /* KeyboardAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardAnimator.m; sourceTree = "<group>"; };
@@ -77,6 +80,8 @@
 				D737C4911FC6CF17000F723F /* LaunchScreen.storyboard */,
 				D737C4941FC6CF18000F723F /* Info.plist */,
 				D737C4951FC6CF18000F723F /* main.m */,
+				3704C0341FDD3D1C00DE8832 /* WebContentViewController.h */,
+				3704C0351FDD3D1C00DE8832 /* WebContentViewController.m */,
 			);
 			path = "Hajirakhata Autologin";
 			sourceTree = "<group>";
@@ -153,6 +158,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D737C4961FC6CF18000F723F /* main.m in Sources */,
+				3704C0361FDD3D1C00DE8832 /* WebContentViewController.m in Sources */,
 				370E7B7D1FD7B32C00A6C69E /* KeyboardAnimator.m in Sources */,
 				D737C4881FC6CF17000F723F /* AppDelegate.m in Sources */,
 				375557851FD8F1F500986F02 /* UserInfo.m in Sources */,

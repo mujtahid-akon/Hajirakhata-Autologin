@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "KeyboardAnimator.h"
+#import "WebContentViewController.h"
 
 @interface LoginViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UISwitch *modifySwitch;

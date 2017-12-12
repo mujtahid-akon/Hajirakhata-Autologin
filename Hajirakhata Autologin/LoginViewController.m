@@ -8,9 +8,10 @@
 
 #import "LoginViewController.h"
 #import "UserInfo.h"
+#import <SystemConfiguration/CaptiveNetwork.h>
 
 @interface LoginViewController ()
-
+@property UINavigationController *webNavController;
 @end
 
 @implementation LoginViewController
@@ -27,13 +28,14 @@
         self.password.text = info.password;
     }
     [self fixTextField];
-    
 
     self.keyboardAnimator = [[KeyboardAnimator alloc]initKeyboardAnimatorWithTextField:@[self.username,self.password] withTargetTextField:@[self.password,self.password] AndWhichViewWillAnimated:self.view bottomConstraints:nil nonBottomConstraints:nil];
     [self.keyboardAnimator registerKeyboardEventListener];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
     [self.view addGestureRecognizer:tap];
+    
+    self.webNavController = (UINavigationController*) [self.storyboard instantiateViewControllerWithIdentifier:@"WebNavigationControllerID"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -53,10 +55,34 @@
 
 - (IBAction)loginButton:(id)sender {
     [self dismissKeyboard];
+    
+    //Check Network
+    CFArrayRef myArray = CNCopySupportedInterfaces();
+    CFDictionaryRef myDict = CNCopyCurrentNetworkInfo(CFArrayGetValueAtIndex(myArray, 0));
+    //NSLog(@"Connected at:%@",myDict);
+    NSDictionary *myDictionary = (__bridge_transfer NSDictionary*)myDict;
+    NSString * SSID = [myDictionary objectForKey:@"SSID"];
+    NSLog(@"ssid is %@",SSID);
+    
+    if (SSID == nil || [SSID compare:@"ReveSystems"] != NSOrderedSame) {
+        [self showAlertWithTitle:@"Sorry!"
+                      message: @"You are not connected with ReveSystems wifi. Please connect first, then try again" andAction:nil];// not connected alert
+        return;
+    }
+    //---------------------------
+    
     [self.button setTitle:@"Logging in..." forState:UIControlStateNormal];
     [self sendData];
     NSLog(@"Pressed login Button\nUsername: %@\nPassword: %@", self.username.text, self.password.text);
+    NSLog(@"login button thread: %@", [NSThread currentThread]);
     //[self.button setTitle:@"Log in" forState:UIControlStateNormal];
+
+//    NSString * storyboardName = @"Main";
+//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+//    UIViewController * self.WebContentViewController = [storyboard instantiateViewControllerWithIdentifier:@""];
+////    self.webContentViewController = [[WebContentViewController alloc]init];
+//    [self presentViewController:vc animated:YES completion:nil];
+    
 }
 
 - (void) sendData{
@@ -86,12 +112,11 @@
             [self.button setTitle:@"Log in" forState:UIControlStateNormal];
         });
         
-        NSLog(@"response: %@\nerr: %@\n", response, error);
+//        NSLog(@"response: %@\nerr: %@\n", response, error);
         
         if (error) {
             NSLog(@"Error Occured!\n%ld\n%@\n",(long)error.code, error.userInfo[@"NSLocalizedDescription"]);
-            
-            [self showAlertWithTitle:@"Error" andMessage:error.userInfo[@"NSLocalizedDescription"]];
+            [self showAlertWithTitle:@"Error" message:error.userInfo[@"NSLocalizedDescription"] andAction:nil];
         }//Response has come from server
         else{
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
@@ -103,7 +128,7 @@
                     //wrong username & password!
                     NSLog(@"Wrong username or password\n%ld" , (long)[httpResponse statusCode]);
                     [self showAlertWithTitle:@"Failed"
-                                  andMessage: @"Wrong username or password!"];
+                                  message: @"Wrong username or password!" andAction:nil];
                 }else{
                     
                     NSString *dateString = httpResponse.allHeaderFields[@"Date"];
@@ -124,14 +149,23 @@
                         [UserInfo writeUsername:self.username.text andPassword:self.password.text]; //store username & password;
                         [self fixTextField];
                     });
+                    NSLog(@"success thread: %@", [NSThread currentThread]);
+                    
+                    UIAlertAction *successAction = [UIAlertAction actionWithTitle:@"OK"
+                                                                            style:UIAlertActionStyleDefault
+                                                                          handler:^(UIAlertAction * action) {
+                                                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                  [self presentViewController:self.webNavController animated:YES completion:nil];
+                                                                              });
+                                                                          }];
                     
                     [self showAlertWithTitle:@"Success"
-                                  andMessage: [NSString stringWithFormat:@"Login time: %@", dateString ]];// success alert
+                                  message: [NSString stringWithFormat:@"Login time: %@", dateString ] andAction:successAction];// success alert
                 }
             }
             else{
                 NSLog(@"Failed! Awkward response from server :(\nstatus code: %ld" , (long)[httpResponse statusCode]);
-                [self showAlertWithTitle:@"Failed!" andMessage: [NSString stringWithFormat:@"Awkward response from server :("]];
+                [self showAlertWithTitle:@"Failed!" message: [NSString stringWithFormat:@"Awkward response from server :("] andAction:nil];
             }
             
         }
@@ -141,14 +175,15 @@
     [dataTask resume];
 }
 
--(void) showAlertWithTitle: (NSString*) title andMessage: (NSString*) message{
+-(void) showAlertWithTitle: (NSString*) title message: (NSString*) message andAction:(UIAlertAction *) customAction{
     UIAlertController* alert = [UIAlertController alertControllerWithTitle: title
                                                                    message: message
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {}];
     
-    [alert addAction:defaultAction];
+    if(customAction==nil)[alert addAction:defaultAction];
+    else [alert addAction:customAction];
     [self presentViewController:alert animated:YES completion:nil];
 }
 - (void)clearAllCookies {
