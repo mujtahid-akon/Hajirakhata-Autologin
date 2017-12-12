@@ -201,7 +201,7 @@
             self.password.enabled = NO;
         }
         else {
-            [self.button setTitle:@"Modify" forState:UIControlStateNormal];
+            [self.button setTitle:@"Edit" forState:UIControlStateNormal];
 //            [self.username becomeFirstResponder];
             self.username.enabled = YES;
             self.password.enabled = YES;
@@ -209,7 +209,7 @@
         
     }
     else{//modify switch on
-        [self.button setTitle:@"Modify" forState:UIControlStateNormal];
+        [self.button setTitle:@"Edit Fields" forState:UIControlStateNormal];
         [self.username becomeFirstResponder];
         self.username.enabled = YES;
         self.password.enabled = YES;

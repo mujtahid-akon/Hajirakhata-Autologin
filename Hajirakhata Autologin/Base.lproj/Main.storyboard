@@ -83,17 +83,17 @@
                                         </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="5JX-Pm-v27">
-                                        <rect key="frame" x="87" y="251" width="113" height="31"/>
+                                        <rect key="frame" x="76.5" y="251" width="123.5" height="31"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Modify" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y1F-ID-ood">
-                                                <rect key="frame" x="0.0" y="0.0" width="56" height="31"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Edit Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y1F-ID-ood">
+                                                <rect key="frame" x="0.0" y="0.0" width="66.5" height="31"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                                 <size key="shadowOffset" width="2" height="1"/>
                                             </label>
                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="QzA-dZ-Ehu">
-                                                <rect key="frame" x="64" y="0.0" width="51" height="31"/>
+                                                <rect key="frame" x="74.5" y="0.0" width="51" height="31"/>
                                                 <connections>
                                                     <action selector="unlockFields:" destination="6NH-Aw-bWe" eventType="valueChanged" id="yVf-m8-pNt"/>
                                                 </connections>
