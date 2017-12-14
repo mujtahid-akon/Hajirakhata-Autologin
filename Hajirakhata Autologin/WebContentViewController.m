@@ -6,6 +6,7 @@
 //  Copyright © 2017 Mujtahid Akon. All rights reserved.
 //
 
+#import "Logger.h"
 #import "WebContentViewController.h"
 #import "UserInfo.h"
 
@@ -31,6 +32,7 @@
         urlString = [ NSString stringWithFormat:@"http://hajirakhata.revesoft.com/Login.do?username=%@&password=%@",self.userInfo.username,self.userInfo.password];
     }
     else urlString = @"http://hajirakhata.revesoft.com/Login.do";
+    NSLog(@"Accessed url: %@\n", urlString);
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest * urlRequest = [NSURLRequest requestWithURL:url];
     [self.webContent loadRequest:urlRequest];
@@ -53,12 +55,12 @@
 */
 
 - (void) webViewDidStartLoad:(UIWebView *)webView{
-    NSLog(@"loadingView is loading...");
+//    NSLog(@"loadingView is loading...");
     [self.loadingView setHidden:NO];
 }
 
 - (void) webViewDidFinishLoad:(UIWebView *)webView{
-    NSLog(@"loadingView is unloading...");
+//    NSLog(@"loadingView is unloading...");
     [self.loadingView setHidden:YES];
 }
 

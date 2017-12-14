@@ -9,6 +9,7 @@
 #import "LoginViewController.h"
 #import "UserInfo.h"
 #import <SystemConfiguration/CaptiveNetwork.h>
+#import "Logger.h"
 
 @interface LoginViewController ()
 @property UINavigationController *webNavController;
@@ -18,6 +19,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    NSLog(@"loading login view");
     self.button.layer.cornerRadius = 5.0;
     UserInfo * info = [UserInfo readData];
     if (info) {
@@ -25,7 +27,6 @@
         self.password.text = info.password;
     }
     [self fixTextField];
-//    [self.username becomeFirstResponder];
     
     //make textfields visible above the keyboard
     self.keyboardAnimator = [[KeyboardAnimator alloc]initKeyboardAnimatorWithTextField:@[self.username,self.password] withTargetTextField:@[self.password,self.password] AndWhichViewWillAnimated:self.view bottomConstraints:nil nonBottomConstraints:nil];
@@ -55,39 +56,43 @@
 */
 
 - (IBAction)loginButton:(id)sender {
+    NSLog(@"---------------------------------------------");
     [self dismissKeyboard];
     
     if (self.username.text.length<=0 || self.password.text.length<=0) {
+        
         [self showAlertWithTitle:@"Error!"
                          message: @"Username or password field is empty" andAction:nil];
         return;
     }
     
-    //Check Network
-    CFArrayRef myArray = CNCopySupportedInterfaces();
-    CFDictionaryRef myDict = CNCopyCurrentNetworkInfo(CFArrayGetValueAtIndex(myArray, 0));
-    //NSLog(@"Connected at:%@",myDict);
-    NSDictionary *myDictionary = (__bridge_transfer NSDictionary*)myDict;
-    NSString * SSID = [myDictionary objectForKey:@"SSID"];
-    NSLog(@"ssid is %@",SSID);
+    NSString* SSID = [self getSSID]; //get SSID of wifi network
+    NSLog(@"ssid: %@",SSID);
     
-    if (SSID == nil || [SSID compare:@"ReveSystems"] != NSOrderedSame) {
+    if ( !SSID || ![SSID isEqualToString:@"ReveSystems"] ) {
+        NSLog(@"Alert: Not conncected to ReveSystems wifi");
         [self showAlertWithTitle:@"Sorry!"
                       message: @"You are not connected with ReveSystems wifi. Please connect first, then try again" andAction:nil];// not connected alert
-        return;
     }
     //---------------------------
-    
-    [self.button setTitle:@"Logging in..." forState:UIControlStateNormal];
-    [self sendData];
-    NSLog(@"Pressed login Button\nUsername: %@\nPassword: %@", self.username.text, self.password.text);
-    
+    else{
+        [self.button setTitle:@"Logging in..." forState:UIControlStateNormal];
+        [self sendDataWhileSSID:SSID];
+        NSLog(@"Pressed login Button\nUsername: %@\nPassword: %@", self.username.text, self.password.text);
+    }
 }
 
-- (void) sendData{
+- (void) sendDataWhileSSID: (NSString*) ssid{
+    //double check SSID
+    NSLog(@"In sendDataWhileSSID ssid: %@",ssid);
+    if ( ![ssid isEqualToString:@"ReveSystems"] ) {
+        NSLog(@"This line should never be reached");
+        return;
+    }
+    
     // Create the URLSession on the default configuration
     NSURLSessionConfiguration *defaultSessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    defaultSessionConfiguration.timeoutIntervalForRequest = 60;//in seconds; default = 60s
+//    defaultSessionConfiguration.timeoutIntervalForRequest = 60;//in seconds; default = 60s
 //    defaultSessionConfiguration.timeoutIntervalForResource = //in seconds; default value = 7days;
     NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:defaultSessionConfiguration];
     
@@ -106,25 +111,21 @@
     // Create dataTask
     NSURLSessionDataTask *dataTask = [defaultSession dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
-//        NSLog(@"response: %@\nerr: %@\n", response, error);
-        
-        if (error) {
-            NSLog(@"Error Occured!\n%ld\n%@\n",(long)error.code, error.userInfo[@"NSLocalizedDescription"]);
+        if (error) {// error from local/server
+            NSLog(@"Error while sending/receiving! \n%ld\n%@\n",(long)error.code, error.userInfo[@"NSLocalizedDescription"]);
             [self showAlertWithTitle:@"Error" message:error.userInfo[@"NSLocalizedDescription"] andAction:nil];
-        }//Response has come from server
-        else{
+        }
+        else{//Successful response has come from server
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
 //            [self clearAllCookies];
             NSString *responseURL = [httpResponse.URL path];
 //            NSLog(@"%@", responseURL);
-            if((long)[httpResponse statusCode] == 200 ){
-                if ([responseURL localizedCaseInsensitiveContainsString:@"Login.do"]) {
-                    //wrong username & password!
+            if((long)[httpResponse statusCode] == 200 ){// received the webpage successfully
+                if ([responseURL localizedCaseInsensitiveContainsString:@"Login.do"]) { //wrong username & password!
                     NSLog(@"Wrong username or password\n%ld" , (long)[httpResponse statusCode]);
-                    [self showAlertWithTitle:@"Failed!"
+                    [self showAlertWithTitle:@"Failed"
                                   message: @"Wrong username or password" andAction:nil];
-                }else{
-                    
+                }else{ // successful log in
                     NSString *dateString = httpResponse.allHeaderFields[@"Date"];
                     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
                     
@@ -135,19 +136,16 @@
                     dateFormatter.timeZone = [NSTimeZone systemTimeZone]; //GMT +6
                     dateFormatter.dateFormat = @"hh:mm:ss a'\n'EEEE dd MMM, yyyy";
                     dateString = [dateFormatter stringFromDate:loginDate];
-                    NSLog(@"Success! Login time: %@", dateString);
                     
-                    //runs in main thread
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"Success! Login time: %@\n network: %@", dateString, ssid);
+                    dispatch_async(dispatch_get_main_queue(), ^{ //runs in main thread
                         [UserInfo writeUsername:self.username.text andPassword:self.password.text]; //store username & password;
-                        //[self fixTextField];
                     });
-                    UIAlertAction *successAction = [UIAlertAction actionWithTitle:@"OK"
+                    UIAlertAction *successAction = [UIAlertAction actionWithTitle:@"Visit Website"
                                                                             style:UIAlertActionStyleDefault
                                                                           handler:^(UIAlertAction * action) {
                                                                               [self.keyboardAnimator unregisterKeyboardEventListener];
                                                                               dispatch_async(dispatch_get_main_queue(), ^{ //load website in main thread
-                                                                                  
                                                                                   [self presentViewController:self.webNavController animated:YES completion:nil];
                                                                               });
                                                                           }];
@@ -156,9 +154,9 @@
                                    andAction:successAction];// success alert
                 }
             }
-            else{
+            else{ // bad response from server
                 NSLog(@"Failed! Awkward response from server :(\nstatus code: %ld" , (long)[httpResponse statusCode]);
-                [self showAlertWithTitle:@"Failed!" message: [NSString stringWithFormat:@"Awkward response from server :("] andAction:nil];
+                [self showAlertWithTitle:@"Failed" message: [NSString stringWithFormat:@"Awkward response from server :("] andAction:nil];
             }
             
         }
@@ -166,8 +164,8 @@
             [self fixTextField];
         });
     }];
-    // Fire the request
-    [dataTask resume];
+    [dataTask resume]; // Fire the request
+    
 }
 
 -(void) showAlertWithTitle: (NSString*) title message: (NSString*) message andAction:(UIAlertAction *) customAction{
@@ -178,7 +176,13 @@
                                                           handler:^(UIAlertAction * action) {}];
     
     if(customAction==nil)[alert addAction:defaultAction];
-    else [alert addAction:customAction];
+    else { //if success action is reached add additional CANCEL option
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                             handler:^(UIAlertAction * action) {}];
+        [alert addAction:cancelAction];
+        
+        [alert addAction:customAction];
+    }
     [self presentViewController:alert animated:YES completion:nil];
 }
 - (void)clearAllCookies {
@@ -223,6 +227,16 @@
 -(void)dismissKeyboard{
     [self.username resignFirstResponder];
     [self.password resignFirstResponder];
+}
+
+-(NSString*) getSSID{
+    //Check Network
+    CFArrayRef myArray = CNCopySupportedInterfaces();
+    CFDictionaryRef myDict = CNCopyCurrentNetworkInfo(CFArrayGetValueAtIndex(myArray, 0));
+    //NSLog(@"Connected at:%@",myDict);
+    NSDictionary *myDictionary = (__bridge_transfer NSDictionary*)myDict;
+    NSString * SSID = [myDictionary objectForKey:@"SSID"];
+    return SSID;
 }
 
 - (IBAction)unwindToLogin:(UIStoryboardSegue*) segue{

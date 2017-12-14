@@ -11,6 +11,7 @@
 		370E7B7A1FD7A32300A6C69E /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E7B791FD7A32300A6C69E /* LoginViewController.m */; };
 		370E7B7D1FD7B32C00A6C69E /* KeyboardAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E7B7B1FD7B32C00A6C69E /* KeyboardAnimator.m */; };
 		375557851FD8F1F500986F02 /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 375557831FD8F1F500986F02 /* UserInfo.m */; };
+		376AA0DC1FE0FFAC0011EE3F /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = 376AA0DB1FE0FFAC0011EE3F /* Logger.m */; };
 		D737C4881FC6CF17000F723F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D737C4871FC6CF17000F723F /* AppDelegate.m */; };
 		D737C48E1FC6CF17000F723F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D737C48C1FC6CF17000F723F /* Main.storyboard */; };
 		D737C4901FC6CF17000F723F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D737C48F1FC6CF17000F723F /* Assets.xcassets */; };
@@ -27,6 +28,8 @@
 		370E7B7C1FD7B32C00A6C69E /* KeyboardAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardAnimator.h; sourceTree = "<group>"; };
 		375557831FD8F1F500986F02 /* UserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfo.m; sourceTree = "<group>"; };
 		375557841FD8F1F500986F02 /* UserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfo.h; sourceTree = "<group>"; };
+		376AA0DA1FE0FFAC0011EE3F /* Logger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
+		376AA0DB1FE0FFAC0011EE3F /* Logger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Logger.m; sourceTree = "<group>"; };
 		D737C4831FC6CF17000F723F /* Hajirakhata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hajirakhata.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D737C4861FC6CF17000F723F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D737C4871FC6CF17000F723F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -74,6 +77,8 @@
 				D737C48C1FC6CF17000F723F /* Main.storyboard */,
 				370E7B781FD7A32300A6C69E /* LoginViewController.h */,
 				370E7B791FD7A32300A6C69E /* LoginViewController.m */,
+				376AA0DA1FE0FFAC0011EE3F /* Logger.h */,
+				376AA0DB1FE0FFAC0011EE3F /* Logger.m */,
 				375557841FD8F1F500986F02 /* UserInfo.h */,
 				375557831FD8F1F500986F02 /* UserInfo.m */,
 				D737C48F1FC6CF17000F723F /* Assets.xcassets */,
@@ -162,6 +167,7 @@
 				370E7B7D1FD7B32C00A6C69E /* KeyboardAnimator.m in Sources */,
 				D737C4881FC6CF17000F723F /* AppDelegate.m in Sources */,
 				375557851FD8F1F500986F02 /* UserInfo.m in Sources */,
+				376AA0DC1FE0FFAC0011EE3F /* Logger.m in Sources */,
 				370E7B7A1FD7A32300A6C69E /* LoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
