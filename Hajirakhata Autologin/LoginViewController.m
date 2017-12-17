@@ -25,6 +25,7 @@
     if (info) {
         self.username.text = info.username;
         self.password.text = info.password;
+        
     }
     [self fixTextField];
     
@@ -80,6 +81,7 @@
         [self sendDataWhileSSID:SSID];
         NSLog(@"Pressed login Button\nUsername: %@\nPassword: %@", self.username.text, self.password.text);
     }
+    SSID = nil;
 }
 
 - (void) sendDataWhileSSID: (NSString*) ssid{
@@ -137,9 +139,20 @@
                     dateFormatter.dateFormat = @"hh:mm:ss a'\n'EEEE dd MMM, yyyy";
                     dateString = [dateFormatter stringFromDate:loginDate];
                     
-                    NSLog(@"Success! Login time: %@\n network: %@", dateString, ssid);
-                    dispatch_async(dispatch_get_main_queue(), ^{ //runs in main thread
-                        [UserInfo writeUsername:self.username.text andPassword:self.password.text]; //store username & password;
+                    NSLog(@"Success! current Login time: %@\n network: %@", dateString, ssid);
+                    
+                    NSCalendar *calender = [NSCalendar currentCalendar];
+                    NSDate *lastLoginDate = [UserInfo readData].lastLoginDate;
+                    BOOL isSameDate = [calender isDate:lastLoginDate inSameDayAsDate:[NSDate date]];
+                    if(isSameDate){
+                        
+                    }
+                    else{
+                        lastLoginDate = loginDate;
+                    }
+                    NSLog(@"First login time: %@\n: ", lastLoginDate);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [UserInfo writeUsername:self.username.text password:self.password.text andLastLoginDate:lastLoginDate]; //store username & password;
                     });
                     UIAlertAction *successAction = [UIAlertAction actionWithTitle:@"Visit Website"
                                                                             style:UIAlertActionStyleDefault
@@ -150,7 +163,7 @@
                                                                               });
                                                                           }];
                     [self showAlertWithTitle:@"Success!"
-                                  message: [NSString stringWithFormat:@"Login time: %@", dateString ]
+                                     message: [NSString stringWithFormat:@"Current Login time: %@\nFirst Login Time: %@", dateString, [dateFormatter stringFromDate:lastLoginDate]]
                                    andAction:successAction];// success alert
                 }
             }

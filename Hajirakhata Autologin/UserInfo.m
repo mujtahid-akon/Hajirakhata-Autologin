@@ -49,7 +49,7 @@
     NSMutableArray *items = [NSKeyedUnarchiver unarchiveObjectWithData:fileData];
     return [items firstObject];
 }
-+ (void) writeUsername:(NSString*) username andPassword: (NSString*) password {
++ (void) writeUsername:(NSString*) username password: (NSString*) password andLastLoginDate:(NSDate *)lastLoginDate{
     NSArray *urls = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
     NSURL *fileURL = [[urls lastObject] URLByAppendingPathComponent:@"info.data"];
     NSLog(@"%@", fileURL.path);
@@ -61,6 +61,7 @@
     UserInfo *info = [[UserInfo alloc]init];
     info.username = username;
     info.password = password;
+    info.lastLoginDate = lastLoginDate;
     [items addObject:info];
     
     //write to file
@@ -72,6 +73,7 @@
 - (void)encodeWithCoder:(nonnull NSCoder *)aCoder {
     [aCoder encodeObject:self.username forKey:@"username"];
     [aCoder encodeObject:self.password forKey:@"password"];
+    [aCoder encodeObject:self.lastLoginDate forKey:@"lastLoginDate"];
 }
 
 - (nullable instancetype)initWithCoder:(nonnull NSCoder *)aDecoder {
@@ -79,6 +81,7 @@
     if (self) {
         self.username = [aDecoder decodeObjectForKey:@"username"];
         self.password = [aDecoder decodeObjectForKey:@"password"];
+        self.lastLoginDate = [aDecoder decodeObjectForKey:@"lastLoginDate"];
     }
     return self;
 }

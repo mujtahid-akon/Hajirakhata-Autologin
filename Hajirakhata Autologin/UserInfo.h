@@ -12,10 +12,11 @@
 //@property (nonatomic) BOOL isStored;
 @property (nonatomic, copy) NSString *username;
 @property (nonatomic, copy) NSString *password;
+@property (nonatomic, copy) NSDate * lastLoginDate;
 
 - (void)printData;
 + (void) writeData;
-+ (void) writeUsername:(NSString*) username andPassword: (NSString*) password;
++ (void) writeUsername:(NSString*) username password: (NSString*) password andLastLoginDate: (NSDate *) lastLoginDate ;
 + (UserInfo*) readData;
 
 @end
