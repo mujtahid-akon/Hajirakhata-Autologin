@@ -91,7 +91,7 @@
         NSLog(@"This line should never be reached");
         return;
     }
-    
+    ssid = nil;
     // Create the URLSession on the default configuration
     NSURLSessionConfiguration *defaultSessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
 //    defaultSessionConfiguration.timeoutIntervalForRequest = 60;//in seconds; default = 60s
@@ -139,7 +139,7 @@
                     dateFormatter.dateFormat = @"hh:mm:ss a'\n'EEEE dd MMM, yyyy";
                     dateString = [dateFormatter stringFromDate:loginDate];
                     
-                    NSLog(@"Success! current Login time: %@\n network: %@", dateString, ssid);
+                    NSLog(@"Success! current Login time: %@\n", dateString);
                     
                     NSCalendar *calender = [NSCalendar currentCalendar];
                     NSDate *lastLoginDate = [UserInfo readData].lastLoginDate;
